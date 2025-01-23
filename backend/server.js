@@ -2,20 +2,52 @@ import express, { json } from 'express';
 import cors from 'cors';
 import { config } from 'dotenv';
 import { createServer } from 'http';
-import socketIo from 'socket.io';
+import { Server } from 'socket.io';
+import mysql from 'mysql2/promise';
 
 config();
 
 const app = express();
 
-app.use(cors()); 
+app.use(cors());
 app.use(json());
 
 const server = createServer(app);
-const io = socketIo(server); 
+const io = new Server(server);
+
+const dbConfig = {
+  host: process.env.DB_HOST || 'localhost',
+  port: process.env.DB_PORT || '3306',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || 'rani',
+  database: process.env.DB_NAME || 'todo_list1'
+};
+
+const pool = mysql.createPool(dbConfig);
+
+(async () => {
+  try {
+    const connection = await pool.getConnection();
+    console.log('Connected to the MySQL database successfully!');
+    connection.release();
+  } catch (error) {
+    console.error('Error connecting to the MySQL database:', error.message);
+  }
+})();
 
 app.get('/', (req, res) => {
   res.send('Hello, welcome to the messaging system backend!');
+});
+
+// Test database query route
+app.get('/todos', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM todos');
+    res.json(rows);
+  } catch (error) {
+    console.error('Error fetching todos:', error.message);
+    res.status(500).send('Error fetching todos from the database');
+  }
 });
 
 io.on('connection', (socket) => {
