@@ -1,18 +1,26 @@
 { pkgs, ... }: {
   # Specify the Nixpkgs channel
-  channel = "stable-24.05"; # or "unstable"
+  channel = "stable-24.05";
 
   # Define the packages you need
   packages = [
     pkgs.mysql80
     pkgs.sudo
-    # Add other packages as needed
   ];
 
-  # Enable and configure the MySQL service
-  services.mysql = {
-    enable = true;
-    package = pkgs.mysql80;
+   # Enable the MySQL service
+  services = {
+    mysql = {
+      enable = true;
+      package = pkgs.mysql80;
+      initialRootPassword = "root";
+      dataDir = "/var/lib/mysql";
+      socket = "/var/run/mysql/mysql.sock";
+    };
+   };
+
+  # Set environment variables if needed
+  env = {
   };
 
   # Set environment variables if needed

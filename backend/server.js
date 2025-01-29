@@ -1,9 +1,10 @@
-import express, { json } from 'express';
+import express, { json, urlencoded } from 'express';
 import cors from 'cors';
 import { config } from 'dotenv';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import mysql from 'mysql2/promise';
+import authentication from './users/authentication.js';
 
 config();
 
@@ -11,6 +12,7 @@ const app = express();
 
 app.use(cors());
 app.use(json());
+app.use('/',authentication);
 
 const server = createServer(app);
 const io = new Server(server);
@@ -20,7 +22,7 @@ const dbConfig = {
   port: process.env.DB_PORT || '3306',
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD || 'rani',
-  database: process.env.DB_NAME || 'todo_list1'
+  database: process.env.DB_NAME || 'messaging_system'
 };
 
 const pool = mysql.createPool(dbConfig);
@@ -59,6 +61,6 @@ io.on('connection', (socket) => {
 });
 
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
