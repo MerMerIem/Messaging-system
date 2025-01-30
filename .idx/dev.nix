@@ -13,9 +13,6 @@
     mysql = {
       enable = true;
       package = pkgs.mysql80;
-      initialRootPassword = "root";
-      dataDir = "/var/lib/mysql";
-      socket = "/var/run/mysql/mysql.sock";
     };
    };
 
