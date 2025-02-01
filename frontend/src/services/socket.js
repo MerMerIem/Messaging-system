@@ -1,44 +1,85 @@
-import io from 'socket.io-client';
+const SOCKET_URL = 'wss://5000-idx-messaging-system-meriem-real-1738334045250.cluster-p6qcyjpiljdwusmrjxdspyb5m2.cloudworkstations.dev';
 
-const SOCKET_URL = 'http://localhost:5000';
+console.log('socket url:', SOCKET_URL);
 
-class SocketService {
+class WebSocketService {
   socket = null;
-  
-  connect() {
-    this.socket = io(SOCKET_URL);
-    
-    this.socket.on('connect', () => {
-      console.log('Connected to socket server');
-    });
 
-    this.socket.on('error', (error) => {
-      console.error('Socket error:', error);
-    });
+  // Connect to WebSocket server
+  connect() {
+    if (this.socket) {
+      console.warn('Already connected to WebSocket');
+      return;
+    }
+
+    this.socket = new WebSocket(SOCKET_URL);
+
+    this.socket.onopen = () => {
+      console.log('Connected to WebSocket server');
+    };
+
+    this.socket.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+
+    this.socket.onclose = () => {
+      console.log('WebSocket connection closed');
+    };
   }
 
+  // Disconnect from WebSocket server
   disconnect() {
     if (this.socket) {
-      this.socket.disconnect();
+      this.socket.close();
+      this.socket = null; // Clear socket after disconnect
     }
   }
 
-  // Basic events your friend needs to implement on backend
+  // Handle incoming messages
   onMessage(callback) {
-    this.socket.on('message', callback);
+    if (!this.socket) {
+      console.error('WebSocket not initialized. Cannot listen for messages');
+      return;
+    }
+    
+    this.socket.onmessage = (event) => {
+      callback(event.data);
+    };
   }
 
+  // Send message to WebSocket server
   sendMessage(data) {
-    this.socket.emit('message', data);
+    if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+      this.socket.send(data);
+    } else {
+      console.error('WebSocket is not open. Cannot send message');
+    }
   }
 
+  // Handle user connection event
   onUserConnect(callback) {
-    this.socket.on('user_connected', callback);
+    this._onEvent('user_connected', callback);
   }
 
+  // Handle user disconnection event
   onUserDisconnect(callback) {
-    this.socket.on('user_disconnected', callback);
+    this._onEvent('user_disconnected', callback);
+  }
+
+  // Helper function to handle specific events
+  _onEvent(eventType, callback) {
+    if (!this.socket) {
+      console.error('WebSocket not initialized. Cannot listen for events');
+      return;
+    }
+
+    this.socket.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      if (message.event === eventType) {
+        callback(message);
+      }
+    };
   }
 }
 
-export const socketService = new SocketService();
+export const webSocketService = new WebSocketService();
