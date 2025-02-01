@@ -1,0 +1,9 @@
+POST https://5000-idx-messaging-system-meriem-1737666434377.cluster-rz2e7e5f5ff7owzufqhsecxujc.cloudworkstations.dev/signup
+Content-Type: application/json
+# Authorization: Bearer YOUR_TOKEN_HERE
+
+{
+    "email": "something1@gmail.com",
+    "password": "mememememe",
+    "username": ""
+}
