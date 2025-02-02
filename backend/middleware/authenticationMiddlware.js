@@ -7,6 +7,7 @@ config();
 const TOKEN_KEY = process.env.TOKEN_KEY;
 
 export const verifyToken = (req,res,next)=>{
+    console.log("called");
     // get the token from the header of the request
     const token = req.headers['x-api-key'] && req.headers['x-api-key'].split(' ')[1];
 

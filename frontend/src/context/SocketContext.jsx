@@ -2,7 +2,11 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 
 const SocketContext = createContext();
+<<<<<<< HEAD
 const SOCKET_URL = '5000-idx-messaging-system-meriem-1737666434377.cluster-rz2e7e5f5ff7owzufqhsecxujc.cloudworkstations.dev';
+=======
+const SOCKET_URL = '5000-idx-messaging-system-meriem-real-1738334045250.cluster-p6qcyjpiljdwusmrjxdspyb5m2.cloudworkstations.dev';
+>>>>>>> origin/ghani
 
 // Generate a stable user ID and name that persists across refreshes
 const getOrCreateUser = () => {

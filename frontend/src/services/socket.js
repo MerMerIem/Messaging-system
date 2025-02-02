@@ -23,7 +23,6 @@ class SocketService {
     }
   }
 
-  // Basic events your friend needs to implement on backend
   onMessage(callback) {
     this.socket.on('message', callback);
   }

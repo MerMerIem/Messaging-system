@@ -1,34 +1,28 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
+-- MySQL dump 10.13  Distrib 8.0.40, for Linux (x86_64)
 --
--- Hôte : 127.0.0.1:3306
--- Généré le : mar. 28 jan. 2025 à 14:05
--- Version du serveur : 9.1.0
--- Version de PHP : 8.3.14
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
-
+-- Host: localhost    Database: messaging_system
+-- ------------------------------------------------------
+-- Server version	8.0.40
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Base de données : `messaging_system`
---
-
--- --------------------------------------------------------
-
---
--- Structure de la table `file`
+-- Table structure for table `file`
 --
 
 DROP TABLE IF EXISTS `file`;
-CREATE TABLE IF NOT EXISTS `file` (
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `file` (
   `file_id` int NOT NULL AUTO_INCREMENT,
   `url` varchar(255) NOT NULL,
   `message_id` int NOT NULL,
@@ -38,17 +32,30 @@ CREATE TABLE IF NOT EXISTS `file` (
   PRIMARY KEY (`file_id`),
   KEY `sender_id` (`sender_id`),
   KEY `reciever_id` (`reciever_id`),
-  KEY `message_id` (`message_id`)
+  KEY `message_id` (`message_id`),
+  CONSTRAINT `file_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `user` (`user_id`),
+  CONSTRAINT `file_ibfk_2` FOREIGN KEY (`reciever_id`) REFERENCES `user` (`user_id`),
+  CONSTRAINT `file_ibfk_3` FOREIGN KEY (`message_id`) REFERENCES `message` (`message_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Structure de la table `message`
+-- Dumping data for table `file`
+--
+
+LOCK TABLES `file` WRITE;
+/*!40000 ALTER TABLE `file` DISABLE KEYS */;
+/*!40000 ALTER TABLE `file` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `message`
 --
 
 DROP TABLE IF EXISTS `message`;
-CREATE TABLE IF NOT EXISTS `message` (
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `message` (
   `message_id` int NOT NULL AUTO_INCREMENT,
   `content` varchar(255) NOT NULL,
   `sender_id` int NOT NULL,
@@ -57,17 +64,29 @@ CREATE TABLE IF NOT EXISTS `message` (
   `message_read` enum('read','unread') NOT NULL,
   PRIMARY KEY (`message_id`),
   KEY `sender_id` (`sender_id`),
-  KEY `reciever_id` (`reciever_id`)
+  KEY `reciever_id` (`reciever_id`),
+  CONSTRAINT `message_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `user` (`user_id`),
+  CONSTRAINT `message_ibfk_2` FOREIGN KEY (`reciever_id`) REFERENCES `user` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Structure de la table `notification`
+-- Dumping data for table `message`
+--
+
+LOCK TABLES `message` WRITE;
+/*!40000 ALTER TABLE `message` DISABLE KEYS */;
+/*!40000 ALTER TABLE `message` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `notification`
 --
 
 DROP TABLE IF EXISTS `notification`;
-CREATE TABLE IF NOT EXISTS `notification` (
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `notification` (
   `notification_id` int NOT NULL AUTO_INCREMENT,
   `message_id` int NOT NULL,
   `sender_id` int NOT NULL,
@@ -77,54 +96,57 @@ CREATE TABLE IF NOT EXISTS `notification` (
   PRIMARY KEY (`notification_id`),
   KEY `sender_id` (`sender_id`),
   KEY `reciever_id` (`reciever_id`),
-  KEY `message_id` (`message_id`)
+  KEY `message_id` (`message_id`),
+  CONSTRAINT `notification_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `user` (`user_id`),
+  CONSTRAINT `notification_ibfk_2` FOREIGN KEY (`reciever_id`) REFERENCES `user` (`user_id`),
+  CONSTRAINT `notification_ibfk_3` FOREIGN KEY (`message_id`) REFERENCES `message` (`message_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Structure de la table `user`
+-- Dumping data for table `notification`
+--
+
+LOCK TABLES `notification` WRITE;
+/*!40000 ALTER TABLE `notification` DISABLE KEYS */;
+/*!40000 ALTER TABLE `notification` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user`
 --
 
 DROP TABLE IF EXISTS `user`;
-CREATE TABLE IF NOT EXISTS `user` (
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user` (
   `user_id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(20) NOT NULL,
   `email` varchar(50) NOT NULL,
-  `password` varchar(30) NOT NULL,
+  `password` varchar(255) DEFAULT NULL,
   `status` enum('online','offline') NOT NULL,
   `pf_pic` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Contraintes pour les tables déchargées
+-- Dumping data for table `user`
 --
 
---
--- Contraintes pour la table `file`
---
-ALTER TABLE `file`
-  ADD CONSTRAINT `file_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `user` (`user_id`),
-  ADD CONSTRAINT `file_ibfk_2` FOREIGN KEY (`reciever_id`) REFERENCES `user` (`user_id`),
-  ADD CONSTRAINT `file_ibfk_3` FOREIGN KEY (`message_id`) REFERENCES `message` (`message_id`);
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (1,'mermer','selmounemeriem@gmail.com','$2b$10$55nf6ZJIb2F82ZQt3U1YGuOv9Y9.mHeAUhMDD6ShiwtymIAQPwfyW','online',NULL),(9,'sarah','sarah@gmail.com','$2b$10$wImIcygDQfAWiVWhJoI.cOdxCPmZKTwu3OSCFOTqFqFEs5Ccgkh1C','online',NULL),(10,'mermerrani212','mermermerrr33r2@gmail.com','$2b$10$Ca2uMvsauA8nqycFj3ReH.IE.ewDnK/9bKDfeNDHW5hOyjM1UjNGG','online',NULL),(11,'mermerrani2132322','mermermerrr33r222@gmail.com','$2b$10$nCjSIjCNNW0Wl3CChN9PgeRNnpagbEY7fo32eTp1/KfXOhoqWg3ba','online',NULL);
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
---
--- Contraintes pour la table `message`
---
-ALTER TABLE `message`
-  ADD CONSTRAINT `message_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `user` (`user_id`),
-  ADD CONSTRAINT `message_ibfk_2` FOREIGN KEY (`reciever_id`) REFERENCES `user` (`user_id`);
-
---
--- Contraintes pour la table `notification`
---
-ALTER TABLE `notification`
-  ADD CONSTRAINT `notification_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `user` (`user_id`),
-  ADD CONSTRAINT `notification_ibfk_2` FOREIGN KEY (`reciever_id`) REFERENCES `user` (`user_id`),
-  ADD CONSTRAINT `notification_ibfk_3` FOREIGN KEY (`message_id`) REFERENCES `message` (`message_id`);
-COMMIT;
-
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2025-02-01 23:01:26

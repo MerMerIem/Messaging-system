@@ -4,9 +4,6 @@ import jwt from 'jsonwebtoken';
 import {config} from 'dotenv';
 config();
 
-console.log("token key is ",process.env.TOKEN_KEY);
-console.log("token expires in ",process.env.TOKEN_EXPIRES);
-
 async function createToken(tokenData,tokenKey = process.env.TOKEN_KEY,expiresIn = process.env.TOKEN_EXPIRES){
     try{
         const token = jwt.sign(tokenData,tokenKey,{expiresIn});
