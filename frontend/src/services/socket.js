@@ -1,6 +1,6 @@
 import io from 'socket.io-client';
 
-const SOCKET_URL = 'http://localhost:5000';
+const SOCKET_URL = '5000-idx-messaging-system-meriem-1737666434377.cluster-rz2e7e5f5ff7owzufqhsecxujc.cloudworkstations.dev';
 
 class SocketService {
   socket = null;
@@ -10,6 +10,10 @@ class SocketService {
     
     this.socket.on('connect', () => {
       console.log('Connected to socket server');
+    });
+
+    this.socket.on('welcome', (message)=>{
+      console.log(message);
     });
 
     this.socket.on('error', (error) => {
