@@ -10,7 +10,7 @@ router.post('/upload',upload.single('file'), (req, res)=>{
     }
     return res.status(200).json({
         message: "File uploaded successufully !",
-        fileUrl: `/uploads/${req.file.filename}`
+        fileUrl: `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`
     });
 });
 

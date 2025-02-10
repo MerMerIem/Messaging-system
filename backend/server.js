@@ -4,14 +4,18 @@ import { createServer } from 'http';
 import {config} from 'dotenv';
 config();
 import { Server } from 'socket.io';
-import router from './routes/authenticationRoute.js';
+import authRouter from './routes/authenticationRoute.js';
+import sendFileRouter from './routes/sendingFilesRoute.js';
+import downloadFileRouter from './routes/downloadFileRoute.js';
 
 const app = express();
 
 app.use(cors());
 app.use(json());
 app.use('/uploads', express.static('uploads'));
-app.use('/',router);
+app.use('/api/auth',authRouter);
+app.use('/api/sendFile',sendFileRouter);
+app.use('/api/downloadFile',downloadFileRouter);
 
 const server = createServer(app);
 const io = new Server(server , {
