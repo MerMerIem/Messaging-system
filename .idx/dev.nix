@@ -11,7 +11,7 @@
    # Enable the MySQL service
   services = {
     mysql = {
-      enable = true;
+      enable = false;
       package = pkgs.mysql80;
     };
    };

@@ -10,6 +10,8 @@ import downloadFileRouter from './routes/downloadFileRoute.js';
 
 const app = express();
 
+
+//test test 
 app.use(cors());
 app.use(json());
 app.use('/uploads', express.static('uploads'));
