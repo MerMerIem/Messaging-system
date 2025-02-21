@@ -4,7 +4,7 @@ import { useSocket } from '../context/SocketContext';
 import { socketService } from '../services/socket';
 
 const UserSidebar = ({onlineUsers, setActiveChat, activeChat}) => (
-  <div className="w-1/4 bg-white shadow-md p-4 rounded-xl">
+  <div className="w-1/4 bg-white shadow-md p-4 rounded-xl overflow-y-auto ">
     <h2 className="text-xl font-semibold text-blue-600 mb-4">Online Users</h2>
     <div className="space-y-2">
       {onlineUsers.map(user => (
@@ -27,7 +27,7 @@ const UserSidebar = ({onlineUsers, setActiveChat, activeChat}) => (
   </div>
 );
 
-const ChatArea = ({messagesEndRef, messageInput, setMessageInput, activeChat, chatMessages, handleSendMessage, currentUser}) => (
+const ChatArea = ({messagesEndRef, messageInput, setMessageInput, activeChat, chatMessages, handleSendMessage,handleSendFile, currentUser, setFileInput}) => (
   <div className="flex-1 flex-col bg-white justify-between rounded-xl p-4 shadow-md">
     {activeChat ? (
       <>
@@ -77,9 +77,18 @@ const ChatArea = ({messagesEndRef, messageInput, setMessageInput, activeChat, ch
               type="submit"
               className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
             >
-              Send
+              Send Message
             </button>
           </div>
+          <br />
+          <input type="file" name = "file" onChange={(e)=>setFileInput(e.target.files[0])} />
+          <button
+            type='submit'
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+            onClick={handleSendFile}
+          >
+            Send File
+          </button>
         </form>
       </>
     ) : (
@@ -97,13 +106,15 @@ function DashboardPage() {
     activeChat, 
     setActiveChat, 
     currentUser, 
-    sendPrivateMessage 
+    sendPrivateMessage,
+    sendFile
   } = useSocket();
 
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const messagesEndRef = useRef(null);
   const [messageInput, setMessageInput] = useState('');
+  const [fileInput , setFileInput] = useState(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -124,12 +135,22 @@ function DashboardPage() {
     }
   };
 
+  const handleSendFile = (e) => {
+    e.preventDefault();
+    console.log("called ! send file");
+    if(fileInput && activeChat){
+      sendFile(activeChat.id, fileInput);
+      setFileInput(null);
+    }
+  };
+
   const handleLogout = () => {
     socketService.disconnect();
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     navigate('/login');
   };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100">
@@ -161,10 +182,12 @@ function DashboardPage() {
               chatMessages={chatMessages}
               activeChat={activeChat}
               handleSendMessage={handleSendMessage}
+              handleSendFile={handleSendFile}
               messageInput={messageInput}
               setMessageInput={setMessageInput}
               messagesEndRef={messagesEndRef}
               currentUser={currentUser}
+              setFileInput={setFileInput}
             />
           </div>
         )}

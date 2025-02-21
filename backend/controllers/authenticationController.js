@@ -1,7 +1,6 @@
 // here we will handle the user's inputs within the database
 
 import db from '../config/db.js';
-import {body,validationResult} from 'express-validator';
 import {hashPassword , comparePassword} from '../utils/hashing.js';
 import createToken from '../utils/createToken.js';
 
