@@ -1,5 +1,3 @@
-HEAD
-
 # 📱 **Messaging System with Notifications**
 
 ## 📝 **Project Overview**
